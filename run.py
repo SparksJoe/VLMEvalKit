@@ -9,12 +9,14 @@ from vlmeval.inference_mt import infer_data_job_mt
 from vlmeval.smp import *
 from vlmeval.utils.result_transfer import MMMU_result_transfer, MMTBench_result_transfer
 
+from mmengine.config import Config, DictAction
 
 def parse_args():
     parser = argparse.ArgumentParser()
     # Essential Args
-    parser.add_argument('--data', type=str, nargs='+', required=True)
-    parser.add_argument('--model', type=str, nargs='+', required=True)
+    parser.add_argument('--config', type=str)
+    parser.add_argument('--data', type=str, nargs='+')
+    parser.add_argument('--model', type=str, nargs='+')
     # Args that only apply to Video Dataset
     parser.add_argument('--nframe', type=int, default=8)
     parser.add_argument('--pack', action='store_true')
@@ -35,14 +37,48 @@ def parse_args():
     parser.add_argument('--ignore', action='store_true', help='Ignore failed indices. ')
     # Rerun: will remove all evaluation temp files
     parser.add_argument('--rerun', action='store_true')
+    parser.add_argument(
+        '--config-options',
+        nargs='+',
+        action=DictAction,
+        help='override some settings in the used config, the key-value pair '
+        'in xxx=yyy format will be merged into config file. If the value to '
+        'be overwritten is a list, it should be like key="[a,b]" or key=a,b '
+        'It also allows nested list/tuple values, e.g. key="[(a,b),(c,d)]" '
+        'Note that the quotation marks are necessary and that no white space '
+        'is allowed.')
     args = parser.parse_args()
     return args
 
+# can do: --config-options mmengine 
+def args2config(args):
+    
+    if args.config is not None:
+        cfg = Config.fromfile(args.config)
+        if args.config_options is not None:
+            cfg.merge_from_dict(args.config_options)
+            
+        if cfg.data is None or cfg.model is None:
+            raise AssertionError('Both data and model should be provided in config. ')
+            
+    elif all([args.data, args.model]):
+        provided_args = {
+        arg: value 
+        for arg, value in vars(args).items() 
+        if (value is not None) and value
+        }
+        cfg = Config(provided_args)
+        
+    else:
+        raise AssertionError('Either --config or --data and --model should be provided. ')
+        
+    return cfg
 
 def main():
     logger = get_logger('RUN')
 
-    args = parse_args()
+    args_raw = parse_args()
+    args = args2config(args_raw)
     assert len(args.data), '--data should be a list of data files'
 
     if args.retry is not None:
@@ -139,6 +175,7 @@ def main():
                     work_dir=pred_root,
                     model_name=model_name,
                     dataset=dataset,
+                    cfg=args,
                     verbose=args.verbose,
                     api_nproc=args.nproc,
                     ignore_failed=args.ignore)
