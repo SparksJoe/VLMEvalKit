@@ -65,7 +65,7 @@ def fetch_qs_part(reasoning_module, question):
 
 def merge_qs_part(qs_part):
     generic_prompt = prompt_mapping['generic']
-    prompt = generic + 'Especially, pay attention to ' + qs_part
+    prompt = generic_prompt + 'Especially, pay attention to ' + qs_part
     if not prompt.endswith('.'):
         prompt += '.'
     return prompt
@@ -80,7 +80,7 @@ class ReasoningWrapper:
         self.vllm_api_base = f'http://localhost:{self.PORT}/v1/chat/completions'
 
         default_params = {
-            'max_tokens': 50,
+            'max_tokens': 512,
             'verbose': False,
             'retry': 5
         }

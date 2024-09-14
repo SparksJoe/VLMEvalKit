@@ -2,7 +2,6 @@
 model = ['prism']
 data = ['MMStar']
 nproc = 16
-work_dir = './outputs'
 ignore = 1
 
 # Prism Config

@@ -60,6 +60,10 @@ def args2config(args):
             
         if cfg.data is None or cfg.model is None:
             raise AssertionError('Both data and model should be provided in config. ')
+        
+        for k, v in vars(args).items():
+            if getattr(cfg, k, None) is None:
+                setattr(cfg, k, v)
             
     elif all([args.data, args.model]):
         provided_args = {
