@@ -10,7 +10,7 @@ class Prism(BaseModel):
         
         cfg = Config(kwargs)
         if 'cfg' in kwargs:
-            if cfg is not None:
+            if kwargs['cfg'] is not None:
                 cfg = kwargs['cfg']
         self.cfg = cfg
         

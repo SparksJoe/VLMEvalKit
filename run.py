@@ -69,7 +69,6 @@ def args2config(args):
         provided_args = {
         arg: value 
         for arg, value in vars(args).items() 
-        if (value is not None) and value
         }
         cfg = Config(provided_args)
         

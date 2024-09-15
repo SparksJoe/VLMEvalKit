@@ -7,7 +7,7 @@ ignore = 1
 # Prism Config
 perception_module = 'GPT4o'
 reasoning_module = 'chatgpt-0125'
-prompt_version = 'generic'
+prompt_version = 'qs'
 postproc = 1
 
 # Model Parameters
