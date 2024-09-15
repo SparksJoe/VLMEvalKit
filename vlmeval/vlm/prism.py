@@ -85,7 +85,7 @@ class Prism(BaseModel):
         des = ''
         for i, pmessage in enumerate(pmessages):
             if len(pmessages) > 1:
-                des = f'Image {i+1}:\n'
+                des += f'\nImage {i+1}:\n'
             des += self.perception_module.generate(pmessage, dataset='coco')
             
         iprompt = self.build_infer_prompt(content, des)
