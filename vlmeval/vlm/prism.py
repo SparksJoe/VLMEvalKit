@@ -6,6 +6,8 @@ from mmengine.config import Config
 
 class Prism(BaseModel):
     
+    INTERLEAVE = True
+    
     def __init__(self, **kwargs):
         
         cfg = Config(kwargs)

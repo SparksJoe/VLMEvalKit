@@ -89,8 +89,8 @@ class ReasoningWrapper:
         
         if 'cfg' in kwargs:
             cfg = kwargs['cfg']
-            if getattr(cfg, 'model_params', None) is not None:
-                self.llm_params.update(cfg['model_params'])
+            if getattr(cfg, 'llm_params', None) is not None:
+                self.llm_params.update(cfg['llm_params'])
         max_tokens = self.llm_params['max_tokens']
         verbose = self.llm_params['verbose']
         retry = self.llm_params['retry']
